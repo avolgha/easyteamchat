@@ -1,0 +1,8 @@
+name: EasyTeamChat
+version: 1.0.0
+main: tv.marius.easyteamchat.Plugin
+
+author: MariusTV
+
+commands:
+  teamchat:
