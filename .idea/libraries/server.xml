@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="server">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../servers/bungee 1.15.2/server.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

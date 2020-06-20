@@ -13,6 +13,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.config.Configuration;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -20,10 +21,18 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TeamChatCommand extends Command {
     private final String pr;
     private final ArrayList<ProxiedPlayer> teamchat = new ArrayList<>();
+    private final Configuration config;
 
     public TeamChatCommand(String name, String prefix) {
         super(name);
         this.pr = prefix;
+        this.config = Plugin.getConfig();
+        setupConfig();
+    }
+
+    private void setupConfig() {
+        if (config.get("pattern") == null)
+            config.set("pattern", "%prefix% &a%displayname% &8=> &7%message%");
     }
 
     @Override
@@ -62,8 +71,10 @@ public class TeamChatCommand extends Command {
                     if (teamchat.contains(executor)) {
                         AtomicReference<String> message = new AtomicReference<>("");
                         for (int i = 1; i < args.length; i++) message.set(message.get() + args[i] + " ");
-                        teamchat.forEach(p -> p.sendMessage(translate(pr + "§e" + executor.getDisplayName() + " §8=> §7" +
-                                ChatColor.translateAlternateColorCodes('&', message.get()))));
+                        String msg = ChatColor.translateAlternateColorCodes('&', config.getString("pattern")
+                                    .replaceAll("%prefix%", pr).replaceAll("%displayname%", executor.getDisplayName())
+                                    .replaceAll("%message%", message.get()));
+                        teamchat.forEach(p -> p.sendMessage(translate(msg)));
                     } else {
                         executor.sendMessage(translate(pr + "§cYou have to be logged in to send messages"));
                     }
